@@ -1,8 +1,8 @@
 class APIError extends Error {
     status: number;
-    errors: never[]
+    errors: any[]
 
-    constructor(status: number, message: string, errors: never[] = []) {
+    constructor(status: number, message: string, errors: any[] = []) {
         super(message)
         this.status = status
         this.errors = errors
@@ -12,7 +12,7 @@ class APIError extends Error {
         return new APIError(200, message)
     }
 
-    static BadRequests(message: string, error: never[] = []) {
+    static BadRequests(message: string, error: any[] = []) {
         return new APIError(400, message, error)
     }
 
@@ -28,7 +28,7 @@ class APIError extends Error {
         return new APIError(404, message)
     }
 
-    static ServerError(error: never[] = []) {
+    static ServerError(error: any[] = []) {
         return new APIError(500, "Ошибка сервера", error)
     }
 }
