@@ -1,9 +1,10 @@
 require('dotenv').config();
 import * as mongoose from "mongoose";
 import express from "express";
-import {app, server} from "./socket/socket";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import {app, server} from "./socket/socket";
+import errorMiddleware from "./middlewares/error.middleware";
 
 const {CLIENT_URL, DB_URL, PORT} = process.env
 
@@ -14,6 +15,8 @@ app.use(cors({
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true
 }))
+// @ts-ignore
+app.use(errorMiddleware);
 
 const run = async () => {
     try {
