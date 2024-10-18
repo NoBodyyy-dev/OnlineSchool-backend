@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import {app, server} from "./socket/socket";
 import errorMiddleware from "./middlewares/error.middleware";
+import router from "./routes/router";
 
 const {CLIENT_URL, DB_URL, PORT} = process.env
 
@@ -17,6 +18,7 @@ app.use(cors({
 }))
 // @ts-ignore
 app.use(errorMiddleware);
+app.use("/api", router);
 
 const run = async () => {
     try {
