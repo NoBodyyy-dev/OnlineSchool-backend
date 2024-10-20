@@ -2,11 +2,11 @@ import {UserDTOInterface} from "../interfaces/user.interface";
 import {Types} from "mongoose";
 import jwt from "jsonwebtoken";
 import Token from "../models/Token.model";
-const {accessSecret, refreshSecret, jwtAccessLive, jwtRefreshLive} = require("../config/config");
+const {ACCESS_SECRET, ACCESS_LIVE, REFRESH_SECRET, REFRESH_LIVE} = process.env
 
 export const generateToken = (payload: UserDTOInterface) => {
-    const accessToken = jwt.sign(payload, accessSecret, {expiresIn: jwtAccessLive})
-    const refreshToken = jwt.sign(payload, refreshSecret, {expiresIn: jwtRefreshLive})
+    const accessToken = jwt.sign(payload, ACCESS_SECRET!, {expiresIn: ACCESS_LIVE})
+    const refreshToken = jwt.sign(payload, REFRESH_SECRET!, {expiresIn: REFRESH_LIVE})
 
     return {accessToken, refreshToken}
 }
@@ -27,7 +27,7 @@ export const removeToken = async (refreshToken: string) => {
 
 export const validateAccessToken = async (token: string) => {
     try {
-        return jwt.verify(token, accessSecret)
+        return jwt.verify(token, ACCESS_SECRET!)
     } catch (e) {
         return null
     }
@@ -35,7 +35,7 @@ export const validateAccessToken = async (token: string) => {
 
 export const validateRefreshToken = async (token: string) => {
     try {
-        return jwt.verify(token, refreshSecret)
+        return jwt.verify(token, REFRESH_SECRET!)
     } catch (e) {
         return null;
     }

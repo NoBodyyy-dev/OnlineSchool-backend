@@ -27,7 +27,28 @@ export const signUpFunc = async (req: Request, res: Response, next: NextFunction
 
         res.cookie('refreshToken', tokens.refreshToken, {maxAge: maxRefreshTokenAge, httpOnly: true})
 
-        res.json(tokens)
+        return res.json(tokens)
+    } catch (e) {
+        next(e)
+    }
+}
+
+export const loginFunc = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        await catchErrors(req, res, next);
+
+        const {phone, password} = req.body;
+        const findUserByPhone = await User.findOne({phone: phone})
+        if (!findUserByPhone?._id) return next(APIError.NotFound("User not found"))
+        if (password === findUserByPhone!.password) {
+            const userDto = new UserDto(findUserByPhone)
+            const tokens = generateToken({...userDto})
+            await saveToken(userDto.id, tokens.refreshToken)
+
+            res.cookie('refreshToken', tokens.refreshToken, {maxAge: maxRefreshTokenAge, httpOnly: true})
+
+            return res.json(tokens)
+        } else return next(APIError.BadRequests("Wrong password! Try again!"))
     } catch (e) {
         next(e)
     }
